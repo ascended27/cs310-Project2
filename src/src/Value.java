@@ -111,7 +111,7 @@ public class Value {
 			return sval;
 		else if (tag.equals("DBL")) {
 			//TODO: Format this dynamically?
-			return String.format("%.2f",dval);
+			return String.format("%.3f",dval);
 		} else
 			return "";
 

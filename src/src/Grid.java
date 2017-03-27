@@ -3,78 +3,173 @@ package src;
 @SuppressWarnings("unused")
 public class Grid {
 
+	// TODO: Update removeRow and removeColumn comments
+
 	Cell head;
 	private int rowNum, colNum, print_width;
 
-	public Grid(int print_width) {
+	public Grid(int print_width, int rowStart, int colStart) {
 		head = null;
 		rowNum = colNum = 0;
 		this.print_width = print_width;
+		init(rowStart, colStart);
+
 	}
 
-	public void init(int row, int col){
+	private void init(int row, int col) {
 		head = new Cell(0);
-		for(int i = 0; i < row; i++)
+		for (int i = 0; i < row; i++)
 			addRow(0);
-		
-		
-		for(int i = 0; i < col; i++)
+
+		for (int i = 0; i < col; i++)
 			addColumn(0);
 	}
-	
-	public void print(){
-		
+
+	public void print() {
+
 		Cell cur = head;
 		Cell tmpRow;
 		System.out.printf("      ");
-		for(int i = 0; i < colNum; i++)
+		for (int i = 0; i < colNum; i++)
 			System.out.print("Col " + i + " ");
-		
+
 		System.out.println();
-		
-		for(int i = 0; i < rowNum; i++){		
+
+		for (int i = 0; i < rowNum; i++) {
 			tmpRow = cur;
 			System.out.print("Row " + i + " ");
-			for(int j = 0; j < colNum; j++){
+			for (int j = 0; j < colNum; j++) {
 				System.out.print(cur.val + " ");
 				cur = cur.right;
 			}
 			System.out.println();
 			cur = tmpRow.down;
 		}
-			
+
 	}
-	
+
 	// Inserts a new row before the row specified
 	// First row starts at 0.
 	public boolean addRow(int row) {
 		Cell current = getRow(row);
-		if(current == null)
+		if (current == null)
 			return false;
-		
+
 		insertRow(current);
 		rowNum++;
 
 		return true;
-		
+
+	}
+
+	public boolean deleteRow(int row) {
+		Cell current = getRow(row);
+		if (current == null)
+			return false;
+
+		removeRow(current);
+		rowNum--;
+
+		return true;
+	}
+
+	private void insertRow(Cell current) {
+		if (current != null) {
+			Cell toAdd = new Cell(rowNum);
+
+			// If current's down is null then we are at the farthest right
+			// column.
+			if (current.down == null) {
+				// Set current's down to the new cell. Don't need to worry bout
+				// toAdd's down since we are inserting at the bottom of the
+				// grid.
+				current.down = toAdd;
+
+				// Recursively add the next Cell in the row
+				insertRow(current.right);
+
+				// If there is a Cell below the current Cell then we need to
+				// assign current's down Cell a right Cell.
+				if (current.right != null)
+					current.down.right = current.right.down;
+			}
+			// Otherwise we are inside the grid somewhere
+			else {
+				// Set current's down to the new cell. Now we need to worry
+				// about the columns to the down so set toAdd's down to
+				// current's down.
+				toAdd.down = current.down;
+				current.down = toAdd;
+
+				// Recursively add the next Cell in the column
+				insertColumn(current.right);
+
+				// If there is a Cell to the right of the current Cell then we
+				// need to
+				// assign current's down Cell a right Cell.
+				if (current.right != null)
+					current.down.right = current.right.down;
+			}
+		}
+	}
+
+	private void removeRow(Cell current) {
+		if (current == head) {
+			head = head.down;
+		} else if (current != null) {
+
+			// If current's right is null then we are at the farthest right
+			// column.
+			if (current.down == null) {
+				// Set current's right to the new cell. Don't need to worry bout
+				// toAdd's right since we are inserting at the end of the grid.
+				current.down = null;
+
+				// Recursively add the next Cell in the column
+				removeRow(current.right);
+
+			}
+			// Otherwise we are inside the grid somewhere
+			else {
+				// Set current's right to the new cell. Now we need to worry
+				// about the columns to the right so set toAdd's right to
+				// current's right.
+				current.down = current.down.down;
+
+				// Recursively add the next Cell in the column
+				removeColumn(current.right);
+
+			}
+		}
 	}
 
 	// Inserts a new column before the column specified
 	// First column starts at 0
 	public boolean addColumn(int col) {
 		Cell current = getCol(col);
-		if(current == null)
+		if (current == null)
 			return false;
-		
+
 		insertColumn(current);
 		colNum++;
-		
+
+		return true;
+	}
+
+	public boolean deleteColumn(int col) {
+		Cell current = getCol(col);
+		if (current == null)
+			return false;
+
+		removeColumn(current);
+		colNum--;
+
 		return true;
 	}
 
 	private void insertColumn(Cell current) {
 		if (current != null) {
-			Cell toAdd = new Cell();
+			Cell toAdd = new Cell(colNum);
 
 			// If current's right is null then we are at the farthest right
 			// column.
@@ -109,41 +204,32 @@ public class Grid {
 			}
 		}
 	}
-	
-	private void insertRow(Cell current){
-		if (current != null) {
-			Cell toAdd = new Cell();
 
-			// If current's down is null then we are at the farthest right
+	private void removeColumn(Cell current) {
+		if (current == head) {
+			head = head.right;
+		} else if (current != null) {
+			// If current's right is null then we are at the farthest right
 			// column.
-			if (current.down == null) {
-				// Set current's down to the new cell. Don't need to worry bout
-				// toAdd's down since we are inserting at the bottom of the grid.
-				current.down = toAdd;
+			if (current.right == null) {
+				// Set current's right to the new cell. Don't need to worry bout
+				// toAdd's right since we are inserting at the end of the grid.
+				current.right = null;
 
-				// Recursively add the next Cell in the row
-				insertRow(current.right);
+				// Recursively add the next Cell in the column
+				removeColumn(current.down);
 
-				// If there is a Cell below the current Cell then we need to
-				// assign current's down Cell a right Cell.
-				if (current.right != null)
-					current.down.right = current.right.down;
 			}
 			// Otherwise we are inside the grid somewhere
 			else {
-				// Set current's down to the new cell. Now we need to worry
-				// about the columns to the down so set toAdd's down to
-				// current's down.
-				toAdd.down = current.down;
-				current.down = toAdd;
+				// Set current's right to the new cell. Now we need to worry
+				// about the columns to the right so set toAdd's right to
+				// current's right.
+				current.right = current.right.right;
 
 				// Recursively add the next Cell in the column
-				insertColumn(current.right);
+				removeColumn(current.down);
 
-				// If there is a Cell to the right of the current Cell then we need to
-				// assign current's down Cell a right Cell.
-				if (current.right != null)
-					current.down.right = current.right.down;
 			}
 		}
 	}
@@ -223,7 +309,7 @@ public class Grid {
 
 		return current;
 	}
-	
+
 	private Cell getRow(int row) {
 		if (row > rowNum)
 			return null;

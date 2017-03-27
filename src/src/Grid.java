@@ -234,65 +234,80 @@ public class Grid {
 		}
 	}
 
+	// Adds the cells store at rowA, colA and rowB, colB and stores them in
+	// rowC, colC. If Cell a, b, or c are null then the cell doesn't exist and
+	// the operation can't be performed. So on the driver if this fails
+	// re-prompt the user for correct input.
 	public boolean addNodes(int rowA, int colA, int rowB, int colB, int rowC, int colC) {
-		// TODO: Validate input
-		
-		// Get the cells to operate on
+
+		// Get the cells to operate on.
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
 		Cell c = getCell(rowC, colC);
-		
-		// If either cell is null, it doesn't exist
+
+		// If either cell is null, it doesn't exist.
 		if (a == null || b == null || c == null)
 			return false;
 
 		c.val = a.val.plus(b.val);
-		
+
 		return true;
 	}
 
+	// Subtracts the cells store at rowA, colA and rowB, colB and stores them in
+	// rowC, colC. If Cell a, b, or c are null then the cell doesn't exist and
+	// the operation can't be performed. So on the driver if this fails
+	// re-prompt the user for correct input.
 	public boolean subNodes(int rowA, int colA, int rowB, int colB, int rowC, int colC) {
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
 		Cell c = getCell(rowC, colC);
-		
+
 		// If either cell is null, it doesn't exist
 		if (a == null || b == null || c == null)
 			return false;
 
 		c.val = a.val.minus(b.val);
-		
+
 		return true;
 	}
 
+	// Multiplies the cells store at rowA, colA and rowB, colB and stores them
+	// in rowC, colC. If Cell a, b, or c are null then the cell doesn't exist and
+	// the operation can't be performed. So on the driver if this fails
+	// re-prompt the user for correct input.
 	public boolean mulNodes(int rowA, int colA, int rowB, int colB, int rowC, int colC) {
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
 		Cell c = getCell(rowC, colC);
-		
+
 		// If either cell is null, it doesn't exist
 		if (a == null || b == null || c == null)
 			return false;
 
 		c.val = a.val.star(b.val);
-		
+
 		return true;
 	}
 
+	// Divides the cells store at rowA, colA and rowB, colB and stores them in
+	// rowC, colC. If Cell a, b, or c are null then the cell doesn't exist and
+	// the operation can't be performed. So on the driver if this fails
+	// re-prompt the user for correct input.
 	public boolean divNodes(int rowA, int colA, int rowB, int colB, int rowC, int colC) {
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
 		Cell c = getCell(rowC, colC);
-		
+
 		// If either cell is null, it doesn't exist
 		if (a == null || b == null || c == null)
 			return false;
 
 		c.val = a.val.slash(b.val);
-		
+
 		return true;
 	}
 

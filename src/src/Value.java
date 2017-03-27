@@ -107,11 +107,11 @@ public class Value {
 
 	@Override
 	public String toString() {
+		// TODO: Format this dynamically?
 		if (tag.equals("STRING"))
-			return sval;
+			return sval + "    ";
 		else if (tag.equals("DBL")) {
-			//TODO: Format this dynamically?
-			return String.format("%.3f",dval);
+			return String.format("%.3f", dval);
 		} else
 			return "";
 

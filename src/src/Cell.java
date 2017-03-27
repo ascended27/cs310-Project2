@@ -11,8 +11,13 @@ public class Cell {
 		right = down = null;
 	}
 
-	public Cell(int num) {
+	public Cell(double num) {
 		val = new Value(num);
+		right = down = null;
+	}
+	
+	public Cell(String s){
+		val = new Value(s);
 		right = down = null;
 	}
 	

@@ -235,14 +235,19 @@ public class Grid {
 	}
 
 	public boolean addNodes(int rowA, int colA, int rowB, int colB, int rowC, int colC) {
+		// TODO: Validate input
+		
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
-
+		Cell c = getCell(rowC, colC);
+		
 		// If either cell is null, it doesn't exist
-		if (a == null || b == null)
+		if (a == null || b == null || c == null)
 			return false;
 
+		c.val = a.val.plus(b.val);
+		
 		return true;
 	}
 
@@ -250,11 +255,14 @@ public class Grid {
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
-
+		Cell c = getCell(rowC, colC);
+		
 		// If either cell is null, it doesn't exist
-		if (a == null || b == null)
+		if (a == null || b == null || c == null)
 			return false;
 
+		c.val = a.val.minus(b.val);
+		
 		return true;
 	}
 
@@ -262,11 +270,14 @@ public class Grid {
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
-
+		Cell c = getCell(rowC, colC);
+		
 		// If either cell is null, it doesn't exist
-		if (a == null || b == null)
+		if (a == null || b == null || c == null)
 			return false;
 
+		c.val = a.val.star(b.val);
+		
 		return true;
 	}
 
@@ -274,11 +285,14 @@ public class Grid {
 		// Get the cells to operate on
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
-
+		Cell c = getCell(rowC, colC);
+		
 		// If either cell is null, it doesn't exist
-		if (a == null || b == null)
+		if (a == null || b == null || c == null)
 			return false;
 
+		c.val = a.val.slash(b.val);
+		
 		return true;
 	}
 

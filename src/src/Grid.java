@@ -119,25 +119,23 @@ public class Grid {
 		} else if (current != null) {
 
 			// If current's right is null then we are at the farthest right
-			// column.
+			// row.
 			if (current.down == null) {
-				// Set current's right to the new cell. Don't need to worry bout
-				// toAdd's right since we are inserting at the end of the grid.
+				// Set current's down to null
 				current.down = null;
 
-				// Recursively add the next Cell in the column
+				// Recursively remove the next Cell in the row
 				removeRow(current.right);
 
 			}
 			// Otherwise we are inside the grid somewhere
 			else {
-				// Set current's right to the new cell. Now we need to worry
-				// about the columns to the right so set toAdd's right to
-				// current's right.
+				// Set current's down to the next row below the one being
+				// removed
 				current.down = current.down.down;
 
-				// Recursively add the next Cell in the column
-				removeColumn(current.right);
+				// Recursively add the next Cell in the row.
+				removeRow(current.right);
 
 			}
 		}
@@ -274,7 +272,8 @@ public class Grid {
 	}
 
 	// Multiplies the cells store at rowA, colA and rowB, colB and stores them
-	// in rowC, colC. If Cell a, b, or c are null then the cell doesn't exist and
+	// in rowC, colC. If Cell a, b, or c are null then the cell doesn't exist
+	// and
 	// the operation can't be performed. So on the driver if this fails
 	// re-prompt the user for correct input.
 	public boolean mulNodes(int rowA, int colA, int rowB, int colB, int rowC, int colC) {
@@ -311,6 +310,42 @@ public class Grid {
 		return true;
 	}
 
+	public boolean fill(int rowA, int colA, int rowB, int colB, Value val) {
+
+		if (rowA > rowB || colA > colB)
+			return false;
+
+		for (int i = rowA; i <= rowB; i++){
+			
+			for(int j = colA; j <= colB; j++){
+				Cell cur = getCell(i, j);
+				if(cur == null)
+					return false;
+				
+				cur.val = val;
+			}
+		}
+
+			return true;
+
+	}
+
+	public boolean number(int rowA, int colA, int rowB, int colB){
+		int count = 0;
+		
+		for(int i = rowA; i <= rowB; i++){
+			for(int j = colA; j <= colB; j++){
+				Value val = new Value(count++);
+				Cell cur = getCell(i,j);
+				if(cur == null)
+					return false;
+				cur.val = val;
+			}
+		}
+		
+		return true;
+	}
+	
 	private Cell getCell(int row, int col) {
 		if ((row >= rowNum) && (col >= colNum))
 			return null;

@@ -3,8 +3,6 @@ package src;
 @SuppressWarnings("unused")
 public class Grid {
 
-	// TODO: Update removeRow and removeColumn comments
-
 	Cell head;
 	private int rowNum, colNum, print_width;
 
@@ -17,7 +15,7 @@ public class Grid {
 	}
 
 	private void init(int row, int col) {
-		head = new Cell(0);
+		head = new Cell(print_width);
 		for (int i = 0; i < row; i++)
 			addRow(0);
 
@@ -29,16 +27,31 @@ public class Grid {
 
 		Cell cur = head;
 		Cell tmpRow;
-		System.out.printf("      ");
-		for (int i = 0; i < colNum; i++)
-			System.out.print("Col " + i + " ");
+		int length;
+		for (int i = 0; i <= print_width; i++)
+			System.out.print(" ");
+
+		for (int i = 0; i < colNum; i++) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Col " + i);
+			if (sb.length() < print_width) {
+				for (int j = sb.length(); j <= print_width; j++)
+					sb.append(" ");
+			}
+			System.out.print(sb.toString());
+		}
 
 		System.out.println();
 
 		for (int i = 0; i < rowNum; i++) {
 			tmpRow = cur;
 			System.out.print("Row " + i + " ");
-			for (int j = 0; j < colNum; j++) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Row " + i + " ");
+			for (int j = sb.length(); j < print_width; j++)
+				sb.append(" ");
+			for (int k = 0; k < colNum; k++) {
+
 				System.out.print(cur.val + " ");
 				cur = cur.right;
 			}
@@ -63,9 +76,22 @@ public class Grid {
 	}
 
 	public boolean deleteRow(int row) {
-		Cell current = getRow(row);
-		if (current == null)
+		if (rowNum == 1) {
+			System.out.printf("\n\nThere is must always be one row in the grid.");
 			return false;
+		}
+
+		Cell current;
+
+		if (row == 0)
+			current = head;
+		else
+			current = getRow(row - 1);
+
+		if (current == null) {
+			System.out.printf("\n\nThe row does not exist\n\n");
+			return false;
+		}
 
 		removeRow(current);
 		rowNum--;
@@ -75,7 +101,7 @@ public class Grid {
 
 	private void insertRow(Cell current) {
 		if (current != null) {
-			Cell toAdd = new Cell(rowNum);
+			Cell toAdd = new Cell(print_width);
 
 			// If current's down is null then we are at the farthest right
 			// column.
@@ -142,7 +168,7 @@ public class Grid {
 	}
 
 	// Inserts a new column before the column specified
-	// First column starts at 0
+	// First column starts at 0,
 	public boolean addColumn(int col) {
 		Cell current = getCol(col);
 		if (current == null)
@@ -155,9 +181,21 @@ public class Grid {
 	}
 
 	public boolean deleteColumn(int col) {
-		Cell current = getCol(col);
-		if (current == null)
+		if (rowNum == 1) {
+			System.out.printf("\n\nThere is must always be one column in the grid.");
 			return false;
+		}
+
+		Cell current;
+		if (col == 0)
+			current = head;
+		else
+			current = getCol(col - 1);
+
+		if (current == null) {
+			System.out.printf("\n\nThe column does not exist\n\n");
+			return false;
+		}
 
 		removeColumn(current);
 		colNum--;
@@ -167,7 +205,7 @@ public class Grid {
 
 	private void insertColumn(Cell current) {
 		if (current != null) {
-			Cell toAdd = new Cell(colNum);
+			Cell toAdd = new Cell(print_width);
 
 			// If current's right is null then we are at the farthest right
 			// column.
@@ -247,7 +285,7 @@ public class Grid {
 		if (a == null || b == null || c == null)
 			return false;
 
-		c.val = a.val.plus(b.val);
+		c.val = a.val.plus(b.val, c.val);
 
 		return true;
 	}
@@ -266,7 +304,7 @@ public class Grid {
 		if (a == null || b == null || c == null)
 			return false;
 
-		c.val = a.val.minus(b.val);
+		c.val = a.val.minus(b.val, c.val);
 
 		return true;
 	}
@@ -286,7 +324,7 @@ public class Grid {
 		if (a == null || b == null || c == null)
 			return false;
 
-		c.val = a.val.star(b.val);
+		c.val = a.val.star(b.val, c.val);
 
 		return true;
 	}
@@ -300,155 +338,181 @@ public class Grid {
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
 		Cell c = getCell(rowC, colC);
-		
+
 		// If either cell is null, it doesn't exist
 		if (a == null || b == null || c == null)
 			return false;
 
-		if(b.val.isZero()){
-			System.out.printf("Can't divide by zero at %d, %d\n", rowB, colB);
-			return false;
-		}
-		
-		c.val = a.val.slash(b.val);
+		c.val = a.val.slash(b.val, c.val);
 
 		return true;
 	}
 
-	public boolean addRows(int rowA, int rowB, int rowC){
+	public boolean addRows(int rowA, int rowB, int rowC) {
 		boolean success = false;
-		
-		for(int curCol = 0 ; curCol < colNum; curCol++){
-			success = addNodes(rowA,curCol,rowB,curCol,rowC,curCol);
-			if(!success)
+
+		for (int curCol = 0; curCol < colNum; curCol++) {
+			success = addNodes(rowA, curCol, rowB, curCol, rowC, curCol);
+			if (!success)
 				break;
 		}
-	
+
 		return success;
 	}
 
-	public boolean subRows(int rowA, int rowB, int rowC){
+	public boolean subRows(int rowA, int rowB, int rowC) {
 		boolean success = false;
-		
-		for(int curCol = 0 ; curCol < colNum; curCol++){
-			success = subNodes(rowA,curCol,rowB,curCol,rowC,curCol);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean multRows(int rowA, int rowB, int rowC){
-		boolean success = false;
-		
-		for(int curCol = 0 ; curCol < colNum; curCol++){
-			success = mulNodes(rowA,curCol,rowB,curCol,rowC,curCol);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean divRows(int rowA, int rowB, int rowC){
-		boolean success = false;
-		
-		for(int curCol = 0 ; curCol < colNum; curCol++){
-			success = divNodes(rowA,curCol,rowB,curCol,rowC,curCol);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean addCols(int colA, int colB, int colC){
-		boolean success = false;
-		
-		for(int curRow = 0 ; curRow < rowNum; curRow++){
-			success = addNodes(colA,curRow,colB,curRow,colC,curRow);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean subCols(int colA, int colB, int colC){
-		boolean success = false;
-		
-		for(int curRow = 0 ; curRow < rowNum; curRow++){
-			success = subNodes(colA,curRow,colB,curRow,colC,curRow);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean multCols(int colA, int colB, int colC){
-		boolean success = false;
-		
-		for(int curRow = 0 ; curRow < rowNum; curRow++){
-			success = mulNodes(colA,curRow,colB,curRow,colC,curRow);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean divCols(int colA, int colB, int colC){
-		boolean success = false;
-		
-		for(int curRow = 0 ; curRow < rowNum; curRow++){
-			success = divNodes(colA,curRow,colB,curRow,colC,curRow);
-			if(!success)
-				break;
-		}
-	
-		return success;
-	}
-	
-	public boolean fill(int rowA, int colA, int rowB, int colB, Value val) {
 
-		if (rowA > rowB || colA > colB)
+		for (int curCol = 0; curCol < colNum; curCol++) {
+			success = subNodes(rowA, curCol, rowB, curCol, rowC, curCol);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean multRows(int rowA, int rowB, int rowC) {
+		boolean success = false;
+
+		for (int curCol = 0; curCol < colNum; curCol++) {
+			success = mulNodes(rowA, curCol, rowB, curCol, rowC, curCol);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean divRows(int rowA, int rowB, int rowC) {
+		boolean success = false;
+
+		for (int curCol = 0; curCol < colNum; curCol++) {
+			success = divNodes(rowA, curCol, rowB, curCol, rowC, curCol);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean addCols(int colA, int colB, int colC) {
+		boolean success = false;
+
+		for (int curRow = 0; curRow < rowNum; curRow++) {
+			success = addNodes(colA, curRow, colB, curRow, colC, curRow);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean subCols(int colA, int colB, int colC) {
+		boolean success = false;
+
+		for (int curRow = 0; curRow < rowNum; curRow++) {
+			success = subNodes(colA, curRow, colB, curRow, colC, curRow);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean multCols(int colA, int colB, int colC) {
+		boolean success = false;
+
+		for (int curRow = 0; curRow < rowNum; curRow++) {
+			success = mulNodes(colA, curRow, colB, curRow, colC, curRow);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean divCols(int colA, int colB, int colC) {
+		boolean success = false;
+
+		for (int curRow = 0; curRow < rowNum; curRow++) {
+			success = divNodes(colA, curRow, colB, curRow, colC, curRow);
+			if (!success)
+				break;
+		}
+
+		return success;
+	}
+
+	public boolean fill(int rowA, int colA, int rowB, int colB, String val) {
+		double dVal = 0;
+
+		if (rowA > rowB || colA > colB) {
+			System.out.printf("From row and column must be less than to row and column\n");
 			return false;
+		}
 
-		for (int i = rowA; i <= rowB; i++){
-			
-			for(int j = colA; j <= colB; j++){
-				Cell cur = getCell(i, j);
-				if(cur == null)
-					return false;
-				
-				cur.val = val;
+		if ((rowA >= rowNum) || (rowB >= rowNum) || (colA >= colNum) || (colB > colNum)) {
+			System.out.printf("row and columns must be within the bounds of the grid");
+			return false;
+		}
+
+		for (int i = rowA; i <= rowB; i++) {
+
+			for (int j = colA; j <= colB; j++) {
+				assignNode(i, j, val);
 			}
 		}
 
-			return true;
+		return true;
 
 	}
 
-	public boolean number(int rowA, int colA, int rowB, int colB){
+	public boolean number(int rowA, int colA, int rowB, int colB) {
 		int count = 0;
-		
-		for(int i = rowA; i <= rowB; i++){
-			for(int j = colA; j <= colB; j++){
-				Value val = new Value(count++);
-				Cell cur = getCell(i,j);
-				if(cur == null)
-					return false;
-				cur.val = val;
+		if (rowA > rowB || colA > colB) {
+			System.out.printf("From row and column must be less than to row and column\n");
+			return false;
+		}
+
+		if ((rowA >= rowNum) || (rowB >= rowNum) || (colA >= colNum) || (colB > colNum)) {
+			System.out.printf("row and columns must be within the bounds of the grid");
+			return false;
+		}
+
+		for (int i = rowA; i <= rowB; i++) {
+			for (int j = colA; j <= colB; j++) {
+				assignNode(i, j, "" + count++);
 			}
 		}
-		
+
 		return true;
 	}
-	
+
+	public boolean assignNode(int row, int col, String val) {
+
+		Cell a = getCell(row, col);
+		double dVal = 0;
+
+		if (!val.startsWith("\"")) {
+			dVal = Double.parseDouble(val);
+			val = null;
+		} else
+			val = val.substring(1, val.length());
+
+		if (a == null)
+			return false;
+
+		if (val != null)
+			a.val = new Value(val, print_width);
+		else
+			a.val = new Value(dVal, print_width);
+
+		return true;
+	}
+
 	private Cell getCell(int row, int col) {
-		if ((row >= rowNum) && (col >= colNum))
+		if ((row > rowNum) || (col > colNum) || (col < 0) || (row < 0))
 			return null;
 
 		Cell current = head;

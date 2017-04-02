@@ -6,18 +6,18 @@ public class Cell {
 
 	Value val;
 
-	public Cell() {
-		val = new Value();
+	public Cell(int print_width) {
+		val = new Value(print_width);
 		right = down = null;
 	}
 
-	public Cell(double num) {
-		val = new Value(num);
+	public Cell(double num,int print_width) {
+		val = new Value(num,print_width);
 		right = down = null;
 	}
 	
-	public Cell(String s){
-		val = new Value(s);
+	public Cell(String s,int print_width){
+		val = new Value(s,print_width);
 		right = down = null;
 	}
 	

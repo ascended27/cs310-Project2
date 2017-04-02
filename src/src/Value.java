@@ -89,7 +89,7 @@ public class Value {
 		// Initialize a new Value to return. Default it's tag to INVALID.
 		Value rtnVal = new Value();
 		rtnVal.tag = "INVALID";
-
+		
 		// If both tags are double then do division.
 		if (tag.equals(val.tag) && tag.equals("DBL")) {
 			// Set the return Value's dval to the result of this and val's dval.
@@ -105,6 +105,13 @@ public class Value {
 		return rtnVal;
 	}
 
+	public boolean isZero(){
+		if(tag.equals("DBL"))
+			if(dval == 0)
+				return true;
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		// TODO: Format this dynamically?

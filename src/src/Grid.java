@@ -300,16 +300,117 @@ public class Grid {
 		Cell a = getCell(rowA, colA);
 		Cell b = getCell(rowB, colB);
 		Cell c = getCell(rowC, colC);
-
+		
 		// If either cell is null, it doesn't exist
 		if (a == null || b == null || c == null)
 			return false;
 
+		if(b.val.isZero()){
+			System.out.printf("Can't divide by zero at %d, %d\n", rowB, colB);
+			return false;
+		}
+		
 		c.val = a.val.slash(b.val);
 
 		return true;
 	}
 
+	public boolean addRows(int rowA, int rowB, int rowC){
+		boolean success = false;
+		
+		for(int curCol = 0 ; curCol < colNum; curCol++){
+			success = addNodes(rowA,curCol,rowB,curCol,rowC,curCol);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+
+	public boolean subRows(int rowA, int rowB, int rowC){
+		boolean success = false;
+		
+		for(int curCol = 0 ; curCol < colNum; curCol++){
+			success = subNodes(rowA,curCol,rowB,curCol,rowC,curCol);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
+	public boolean multRows(int rowA, int rowB, int rowC){
+		boolean success = false;
+		
+		for(int curCol = 0 ; curCol < colNum; curCol++){
+			success = mulNodes(rowA,curCol,rowB,curCol,rowC,curCol);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
+	public boolean divRows(int rowA, int rowB, int rowC){
+		boolean success = false;
+		
+		for(int curCol = 0 ; curCol < colNum; curCol++){
+			success = divNodes(rowA,curCol,rowB,curCol,rowC,curCol);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
+	public boolean addCols(int colA, int colB, int colC){
+		boolean success = false;
+		
+		for(int curRow = 0 ; curRow < rowNum; curRow++){
+			success = addNodes(colA,curRow,colB,curRow,colC,curRow);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
+	public boolean subCols(int colA, int colB, int colC){
+		boolean success = false;
+		
+		for(int curRow = 0 ; curRow < rowNum; curRow++){
+			success = subNodes(colA,curRow,colB,curRow,colC,curRow);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
+	public boolean multCols(int colA, int colB, int colC){
+		boolean success = false;
+		
+		for(int curRow = 0 ; curRow < rowNum; curRow++){
+			success = mulNodes(colA,curRow,colB,curRow,colC,curRow);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
+	public boolean divCols(int colA, int colB, int colC){
+		boolean success = false;
+		
+		for(int curRow = 0 ; curRow < rowNum; curRow++){
+			success = divNodes(colA,curRow,colB,curRow,colC,curRow);
+			if(!success)
+				break;
+		}
+	
+		return success;
+	}
+	
 	public boolean fill(int rowA, int colA, int rowB, int colB, Value val) {
 
 		if (rowA > rowB || colA > colB)

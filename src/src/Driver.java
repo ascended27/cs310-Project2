@@ -521,7 +521,7 @@ public class Driver {
 			case "ir":
 				try {
 					// Prompt for user input.
-					System.out.print("insert after row: ");
+					System.out.print("insert before row: ");
 					row = Integer.valueOf(in.nextLine());
 
 					// Insert a new row after the row that the user specified.
@@ -545,7 +545,7 @@ public class Driver {
 			case "ic":
 				try {
 					// Prompt for user input.
-					System.out.print("insert after column: ");
+					System.out.print("insert before column: ");
 					col = Integer.valueOf(in.nextLine());
 
 					// Insert a new column after the row that the user

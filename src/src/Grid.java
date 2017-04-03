@@ -92,12 +92,23 @@ public class Grid {
 			return false;
 		}
 
-		if (row > colNum - 1) {
-			System.out.printf("\n\nThe row does not exist\n\n");
+		if (row > rowNum - 1) {
+			System.out.printf("\n\nThe row does not exist\n");
 			return false;
 		}
-
-		removeRow(row - 1);
+		
+		if(row == 0){
+			Cell tmp = head.down;
+			head = tmp;
+			Cell lastRow = getRow(rowNum-1);
+			for(int i = 0; i < colNum; i++){
+				lastRow.down = tmp;
+				lastRow = lastRow.right;
+				tmp = tmp.right;
+			}
+			
+		} else
+			removeRow(row - 1);
 		rowNum--;
 
 		return true;
@@ -122,7 +133,7 @@ public class Grid {
 		Cell tmp = preCell.down;
 
 		for (int i = 0; i < colNum; i++) {
-			if (preCell.right == getRow(beforeRow - 1))
+			if (preCell.right == getRow(rowNum - 1))
 				tmp.right = getRow(rowNum - 1).down;
 			else {
 				if (preCell.right == null)
@@ -140,7 +151,7 @@ public class Grid {
 		if (preRow == -1)
 			cur = getRow(rowNum - 1);
 		else
-			cur = getRow(rowNum - 1);
+			cur = getRow(preRow);
 
 		for (int i = 0; i < colNum; i++) {
 			cur.down = cur.down.down;
@@ -170,8 +181,20 @@ public class Grid {
 			System.out.printf("\n\nThe column does not exist\n\n");
 			return false;
 		}
-
-		removeColumn(col - 1);
+		
+		if(col == 0){
+			Cell tmp = head.right;
+			head = tmp;
+			Cell lastCol = getCol(colNum-1);
+			for(int i = 0; i < colNum; i++){
+				lastCol.right = tmp;
+				lastCol = lastCol.down;
+				tmp = tmp.down;
+			}
+			
+		} else
+			removeColumn(col - 1);
+		
 		colNum--;
 
 		return true;

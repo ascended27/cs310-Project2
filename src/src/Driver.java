@@ -543,7 +543,7 @@ public class Driver {
 				break;
 			// Insert a column after the user specified column.
 			case "ic":
-				//try {
+				try {
 					// Prompt for user input.
 					System.out.print("insert after column: ");
 					col = Integer.valueOf(in.nextLine());
@@ -558,13 +558,13 @@ public class Driver {
 					if (!success)
 						System.out.printf("%d is not a valid column number\n\n", col);
 
-//				}
+				}
 				// If a user enters a non-numeric value or no value as an index
 				// then catch the exception generated and notify the user of the
 				// error.
-				//catch (Exception e) {
-				//	System.out.println("Please enter a integer value for indices");
-				//}
+				catch (Exception e) {
+					System.out.println("Please enter a integer value for indices");
+				}
 				break;
 			// Delete the user specified row.
 			case "delr":

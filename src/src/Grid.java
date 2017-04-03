@@ -97,7 +97,7 @@ public class Grid {
 			return false;
 		}
 
-		removeColumn(row-1);
+		removeRow(row - 1);
 		rowNum--;
 
 		return true;
@@ -118,22 +118,29 @@ public class Grid {
 			preCell = preCell.right;
 		}
 
-		preCell = getRow(beforeRow - 1);
+		preCell = getRow(rowNum - 1);
 		Cell tmp = preCell.down;
 
 		for (int i = 0; i < colNum; i++) {
 			if (preCell.right == getRow(beforeRow - 1))
 				tmp.right = getRow(rowNum - 1).down;
-			else
+			else {
+				if (preCell.right == null)
+					preCell.right = getRow(beforeRow - 1);
 				tmp.right = preCell.right.down;
+			}
 			preCell = preCell.right;
 			tmp = tmp.right;
 		}
-
+		
 	}
 
 	private void removeRow(int preRow) {
-		Cell cur = getCol(preRow);
+		Cell cur;
+		if (preRow == -1)
+			cur = getRow(rowNum - 1);
+		else
+			cur = getRow(rowNum - 1);
 
 		for (int i = 0; i < colNum; i++) {
 			cur.down = cur.down.down;
@@ -164,7 +171,7 @@ public class Grid {
 			return false;
 		}
 
-		removeColumn(col-1);
+		removeColumn(col - 1);
 		colNum--;
 
 		return true;
@@ -199,11 +206,14 @@ public class Grid {
 			preCell = preCell.down;
 			tmp = tmp.down;
 		}
-
 	}
 
 	private void removeColumn(int preCol) {
-		Cell cur = getCol(preCol);
+		Cell cur;
+		if (preCol == -1) {
+			cur = getCol(colNum - 1);
+		} else
+			cur = getCol(preCol);
 
 		for (int i = 0; i < rowNum; i++) {
 			cur.right = cur.right.right;
@@ -341,7 +351,7 @@ public class Grid {
 		boolean success = false;
 
 		for (int curRow = 0; curRow < rowNum; curRow++) {
-			success = addNodes(colA, curRow, colB, curRow, colC, curRow);
+			success = addNodes(curRow, colA, curRow, colB, curRow, colC);
 			if (!success)
 				break;
 		}
@@ -353,7 +363,7 @@ public class Grid {
 		boolean success = false;
 
 		for (int curRow = 0; curRow < rowNum; curRow++) {
-			success = subNodes(colA, curRow, colB, curRow, colC, curRow);
+			success = subNodes(curRow, colA, curRow, colB, curRow, colC);
 			if (!success)
 				break;
 		}
@@ -365,7 +375,7 @@ public class Grid {
 		boolean success = false;
 
 		for (int curRow = 0; curRow < rowNum; curRow++) {
-			success = mulNodes(colA, curRow, colB, curRow, colC, curRow);
+			success = mulNodes(curRow, colA, curRow, colB, curRow, colC);
 			if (!success)
 				break;
 		}
@@ -377,7 +387,7 @@ public class Grid {
 		boolean success = false;
 
 		for (int curRow = 0; curRow < rowNum; curRow++) {
-			success = divNodes(colA, curRow, colB, curRow, colC, curRow);
+			success = divNodes(curRow, colA, curRow, colB, curRow, colC);
 			if (!success)
 				break;
 		}

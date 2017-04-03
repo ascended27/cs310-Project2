@@ -79,7 +79,26 @@ public class Grid {
 		if (row > rowNum - 1)
 			return false;
 
-		insertRow(row);
+		if (row == 0) {
+			Cell firstRow = head;
+			Cell lastRow = getRow(rowNum-1);
+			for (int i = 0; i < colNum; i++) {
+				Cell toAdd = new Cell(print_width);
+				lastRow.down = toAdd;
+				toAdd.down = firstRow;
+				firstRow = firstRow.right;
+				lastRow = lastRow.right;
+			}
+			
+			lastRow = getRow(rowNum-1);
+			for(int i = 0; i < colNum; i++){
+				lastRow.down.right = lastRow.right.down;
+				lastRow = lastRow.right;
+			}
+
+			head = getRow(rowNum);
+		} else
+			insertRow(row);
 		rowNum++;
 
 		return true;
@@ -96,17 +115,17 @@ public class Grid {
 			System.out.printf("\n\nThe row does not exist\n");
 			return false;
 		}
-		
-		if(row == 0){
+
+		if (row == 0) {
 			Cell tmp = head.down;
 			head = tmp;
-			Cell lastRow = getRow(rowNum-1);
-			for(int i = 0; i < colNum; i++){
+			Cell lastRow = getRow(rowNum - 1);
+			for (int i = 0; i < colNum; i++) {
 				lastRow.down = tmp;
 				lastRow = lastRow.right;
 				tmp = tmp.right;
 			}
-			
+
 		} else
 			removeRow(row - 1);
 		rowNum--;
@@ -129,7 +148,7 @@ public class Grid {
 			preCell = preCell.right;
 		}
 
-		preCell = getRow(rowNum - 1);
+		preCell = getRow(beforeRow - 1);
 		Cell tmp = preCell.down;
 
 		for (int i = 0; i < colNum; i++) {
@@ -143,7 +162,6 @@ public class Grid {
 			preCell = preCell.right;
 			tmp = tmp.right;
 		}
-		
 	}
 
 	private void removeRow(int preRow) {
@@ -164,8 +182,27 @@ public class Grid {
 	public boolean addColumn(int col) {
 		if (col > colNum - 1)
 			return false;
+		
+		if (col == 0) {
+			Cell firstRow = head;
+			Cell lastCol = getCol(colNum-1);
+			for (int i = 0; i < rowNum; i++) {
+				Cell toAdd = new Cell(print_width);
+				lastCol.right = toAdd;
+				toAdd.right = firstRow;
+				firstRow = firstRow.down;
+				lastCol = lastCol.down;
+			}
+			
+			lastCol = getCol(colNum-1);
+			for(int i = 0; i < rowNum; i++){
+				lastCol.right.down = lastCol.down.right;
+				lastCol = lastCol.down;
+			}
 
-		insertColumn(col);
+			head = getCol(colNum);
+		} else
+			insertColumn(col);
 		colNum++;
 
 		return true;
@@ -181,20 +218,20 @@ public class Grid {
 			System.out.printf("\n\nThe column does not exist\n\n");
 			return false;
 		}
-		
-		if(col == 0){
+
+		if (col == 0) {
 			Cell tmp = head.right;
 			head = tmp;
-			Cell lastCol = getCol(colNum-1);
-			for(int i = 0; i < colNum; i++){
+			Cell lastCol = getCol(colNum - 1);
+			for (int i = 0; i < colNum; i++) {
 				lastCol.right = tmp;
 				lastCol = lastCol.down;
 				tmp = tmp.down;
 			}
-			
+
 		} else
 			removeColumn(col - 1);
-		
+
 		colNum--;
 
 		return true;

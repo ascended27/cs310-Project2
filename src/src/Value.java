@@ -1,7 +1,5 @@
 package src;
 
-import java.awt.print.Printable;
-
 public class Value {
 	// Declare Variables
 	private double dval;

@@ -84,7 +84,7 @@ public class Driver {
 					// If the assign operation fails then the user specified a
 					// cell not in the grid. Notify the user of the error.
 					if (!success)
-						System.out.printf("Please enter valid row and column numbers\n\n");
+						System.out.printf("Please enter valid values\n\n");
 
 				}
 				// If a user enters a non-numeric value or no value as an index

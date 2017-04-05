@@ -1,11 +1,22 @@
 package src;
 
-@SuppressWarnings("unused")
 public class Grid {
 
-	Cell head;
+	// Declare variables
+	private Cell head;
 	private int rowNum, colNum, print_width;
 
+	/**
+	 * Default constructor for grid. Sets private fields and initializes the
+	 * grid.
+	 * 
+	 * @param print_width
+	 *            Default width of columns
+	 * @param rowStart
+	 *            Number of rows to initialize
+	 * @param colStart
+	 *            Number of columns to initialize
+	 */
 	public Grid(int print_width, int rowStart, int colStart) {
 		head = null;
 		rowNum = rowStart;
@@ -15,73 +26,127 @@ public class Grid {
 
 	}
 
+	/**
+	 * Initializes the grid with a specified number of rows and columns
+	 * 
+	 * @param row
+	 *            The number of rows to initialize
+	 * @param col
+	 *            The number of columns to initialize
+	 */
 	private void init(int row, int col) {
+		// Initialize the head node of the grid
 		head = new Cell(print_width);
 		head.right = head;
 		head.down = head;
 
+		Cell tmp = head;
+		// Initialize the first row of the grid.
 		for (int i = 0; i < col; i++) {
 			Cell toAdd = new Cell(print_width);
-			toAdd.right = head.right;
+			toAdd.right = tmp.right;
 			toAdd.down = toAdd;
-			head.right = toAdd;
+			tmp.right = toAdd;
+			tmp = tmp.right;
 		}
 
+		// Loop over the passed row number and insert new rows.
 		for (int i = 0; i < row - 1; i++)
 			insertRow(1);
 
+		// Loop over the passed column number and insert new cows.
 		for (int i = 0; i < col; i++)
 			insertColumn(1);
 	}
 
+	/**
+	 * Displays the grid
+	 */
 	public void print() {
-
+		// Get a pointer to the head node in the grid
 		Cell cur = head;
+
+		// Declare a node to hold the front of the row
 		Cell tmpRow;
-		int length;
+
+		// Print out the initial white space to offset the column headers
 		for (int i = 0; i <= print_width - 1; i++)
 			System.out.print(" ");
 
+		// Loop over the header row and print the column number
 		for (int i = 0; i < colNum; i++) {
+			// Create a new string builder to store the current row
 			StringBuilder sb = new StringBuilder();
+
+			// Append the column number
 			sb.append("Col " + i);
+
+			// If the length of sb is less than the print width then append
+			// white space till it is of that length
 			if (sb.length() < print_width) {
 				for (int j = sb.length(); j <= print_width; j++)
 					sb.append(" ");
 			}
+
+			// Print out the header row
 			System.out.print(sb.toString());
 		}
 
+		// Add a new line to start the next row
 		System.out.println();
 
+		// Loop over the rows and print out their values
 		for (int i = 0; i < rowNum; i++) {
+			// Set tmp row to the start of the row.
 			tmpRow = cur;
+
+			// Instantiate a new string builder to store the row.
 			StringBuilder sb = new StringBuilder();
+
+			// Append the row number and the white space to fill out it's column
 			sb.append("Row " + i + " ");
 			for (int j = sb.length(); j < print_width; j++)
 				sb.append(" ");
-			System.out.print(sb.toString());
-			for (int k = 0; k < colNum; k++) {
 
+			// Print out the row header
+			System.out.print(sb.toString());
+
+			// Print out the values current row
+			for (int k = 0; k < colNum; k++) {
+				// When current's value is printed it is already formated to fit
+				// it's column
 				System.out.print(cur.val + " ");
 				cur = cur.right;
 			}
+			// Add a new line to start the next row.
 			System.out.println();
+
+			// Move to the next row
 			cur = tmpRow.down;
 		}
-
 	}
 
-	// Inserts a new row before the row specified
-	// First row starts at 0.
+	/**
+	 * Inserts a new row before the row specified.
+	 * 
+	 * @param row
+	 *            Row number to insert before.
+	 * @return success status of the method.
+	 */
 	public boolean addRow(int row) {
-
+		// If the row given is greater than the number of rows in the grid then
+		// return false
 		if (row > rowNum - 1)
 			return false;
 
+		// If the row number is 0 then add a row at the head of the grid.
 		if (row == 0) {
+			// Get the first and last cell in the grid.
 			Cell firstRow = head;
-			Cell lastRow = getRow(rowNum-1);
+			Cell lastRow = getRow(rowNum - 1);
+
+			// Loop over the row inserting new nodes and making the row
+			// connections
 			for (int i = 0; i < colNum; i++) {
 				Cell toAdd = new Cell(print_width);
 				lastRow.down = toAdd;
@@ -89,58 +154,105 @@ public class Grid {
 				firstRow = firstRow.right;
 				lastRow = lastRow.right;
 			}
-			
-			lastRow = getRow(rowNum-1);
-			for(int i = 0; i < colNum; i++){
+
+			// Get the last row again so we can loop over the row and make the
+			// column connections
+			lastRow = getRow(rowNum - 1);
+
+			// Loop over the row and make the column connections
+			for (int i = 0; i < colNum; i++) {
 				lastRow.down.right = lastRow.right.down;
 				lastRow = lastRow.right;
 			}
 
+			// Set the head to the new head node
 			head = getRow(rowNum);
-		} else
+		}
+		// Otherwise we are inserting somewhere else in the grid
+		else
 			insertRow(row);
+
+		// New row so increment rowNum
 		rowNum++;
 
+		// Row should have been added successfully so return true
 		return true;
 
 	}
 
+	/**
+	 * Deletes the specified row
+	 * 
+	 * @param row
+	 *            Row number to delete
+	 * @return success status of the method.
+	 */
 	public boolean deleteRow(int row) {
+		// If the grid only has one row in it then fail. We must always have a
+		// row in the grid.
 		if (rowNum == 1) {
 			System.out.printf("\n\nThere is must always be one row in the grid.");
 			return false;
 		}
 
+		// If the row given is greater than the number of rows in the grid then
+		// return false
 		if (row > rowNum - 1) {
 			System.out.printf("\n\nThe row does not exist\n");
 			return false;
 		}
 
+		// If the row specified is the head node then delete the head row and
+		// set head to next row down.
 		if (row == 0) {
+			// Get a pointer the next row
 			Cell tmp = head.down;
+
+			// Set the head to the next row
 			head = tmp;
+
+			// Get the last row in the grid to make new column links
 			Cell lastRow = getRow(rowNum - 1);
+
+			// Loop over the row and set the column links
 			for (int i = 0; i < colNum; i++) {
 				lastRow.down = tmp;
 				lastRow = lastRow.right;
 				tmp = tmp.right;
 			}
 
-		} else
+		}
+		// Otherwise remove the row without worrying if it is the head node
+		else
 			removeRow(row - 1);
+
+		// Deleted a row so decrement the rowNum
 		rowNum--;
 
+		// Method finished successfully so return true
 		return true;
 	}
 
-	private void insertRow(int beforeRow) {
+	/**
+	 * Inserts a new row before the row specified
+	 * 
+	 * @param row
+	 *            index of the row to be inserted before.
+	 */
+	private void insertRow(int row) {
+		// Declare a pointer to store the current cell in the row we are
+		// inserting before.
 		Cell preCell;
 
-		if (beforeRow == 0)
+		// If we are inserting before the head node then we need the cell at the
+		// end of the row since we are circularly linked
+		if (row == 0)
 			preCell = getRow(rowNum - 1);
+		// Otherwise we get the row preceding the one we specified
 		else
-			preCell = getRow(beforeRow - 1);
+			preCell = getRow(row - 1);
 
+		// Loop over the row adding a new cell and creating column links
 		for (int i = 0; i < colNum; i++) {
 			Cell toAdd = new Cell(print_width);
 			toAdd.down = preCell.down;
@@ -148,63 +260,94 @@ public class Grid {
 			preCell = preCell.right;
 		}
 
-		preCell = getRow(beforeRow - 1);
+		// Get the first cell in the previous row
+		preCell = getRow(row - 1);
+
+		// Set tmp to the next cell in the column
 		Cell tmp = preCell.down;
 
+		// Loop over the row setting the row links.
 		for (int i = 0; i < colNum; i++) {
+			// If the cell to the right of this cell is the first cell in the
+			// row then we need to establish a circular link
 			if (preCell.right == getRow(rowNum - 1))
 				tmp.right = getRow(rowNum - 1).down;
+			// Otherwise we set tmp's right cell to the cell down and to the
+			// right of preCell
 			else {
-				if (preCell.right == null)
-					preCell.right = getRow(beforeRow - 1);
 				tmp.right = preCell.right.down;
 			}
+			// Move the cells pointers to the next in the row
 			preCell = preCell.right;
 			tmp = tmp.right;
 		}
 	}
 
-	private void removeRow(int preRow) {
-		Cell cur;
-		if (preRow == -1)
-			cur = getRow(rowNum - 1);
-		else
-			cur = getRow(preRow);
+	/**
+	 * Removes the specified row from the grid
+	 * 
+	 * @param row
+	 *            The row to remove
+	 */
+	private void removeRow(int row) {
+		// Initialize a cell to hold a pointer to the row to delete
+		Cell cur = getRow(row);
 
+		// Loop over the row and set the down pointers to the row after the one
+		// being deleted.
 		for (int i = 0; i < colNum; i++) {
 			cur.down = cur.down.down;
 			cur = cur.right;
 		}
 	}
 
-	// Inserts a new column before the column specified
-	// First column starts at 0,
+	/**
+	 * Inserts a new column before the column specified.
+	 * 
+	 * @param col
+	 *            The column to add before
+	 * @return success status of the method.
+	 */
 	public boolean addColumn(int col) {
+		// If the column is greater than the number of columns in the grid then
+		// return false. The column doesn't exist.
 		if (col > colNum - 1)
 			return false;
-		
+
+		// If the column specified is 0 then insert at the head of the grid
 		if (col == 0) {
-			Cell firstRow = head;
-			Cell lastCol = getCol(colNum-1);
+			// Get the first cell in the first and last columns
+			Cell firstCol = head;
+			Cell lastCol = getCol(colNum - 1);
+
+			// Loop over the column setting the row pointer to the column after
 			for (int i = 0; i < rowNum; i++) {
 				Cell toAdd = new Cell(print_width);
 				lastCol.right = toAdd;
-				toAdd.right = firstRow;
-				firstRow = firstRow.down;
+				toAdd.right = firstCol;
+				firstCol = firstCol.down;
 				lastCol = lastCol.down;
 			}
-			
-			lastCol = getCol(colNum-1);
-			for(int i = 0; i < rowNum; i++){
+
+			// Get the first cell in the last column
+			lastCol = getCol(colNum - 1);
+
+			// Loop over the column and set the column pointers
+			for (int i = 0; i < rowNum; i++) {
 				lastCol.right.down = lastCol.down.right;
 				lastCol = lastCol.down;
 			}
 
+			// Set the head pointer to the new column
 			head = getCol(colNum);
-		} else
+		}
+		// Otherwise we can insert a column normally
+		else
 			insertColumn(col);
+		// New column so increment colNum
 		colNum++;
 
+		// Operations is successful so return true
 		return true;
 	}
 
@@ -456,7 +599,6 @@ public class Grid {
 	}
 
 	public boolean fill(int rowA, int colA, int rowB, int colB, String val) {
-		double dVal = 0;
 
 		if (rowA > rowB || colA > colB) {
 			System.out.printf("From row and column must be less than to row and column\n");
@@ -506,13 +648,20 @@ public class Grid {
 		double dVal = 0;
 
 		if (!val.startsWith("\"")) {
-			dVal = Double.parseDouble(val);
-			val = null;
+			try {
+				dVal = Double.parseDouble(val);
+				val = null;
+			} catch (Exception e) {
+				System.out.printf("Non-numeric fill value must start with a \"\n");
+				return false;
+			}
 		} else
 			val = val.substring(1, val.length());
 
-		if (a == null)
+		if (a == null) {
+			System.out.printf("Cell doesn't exist\n");
 			return false;
+		}
 
 		if (val != null)
 			a.val = new Value(val, print_width);
